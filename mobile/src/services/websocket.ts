@@ -1,7 +1,13 @@
-import { WS_URL, WS_RECONNECT_INTERVAL_MS } from "../constants/config";
+import { WS_RECONNECT_INTERVAL_MS } from "../constants/config";
+import { useConnectionStore } from "../stores/useConnectionStore";
 import { getToken } from "../utils/storage";
 
 type MessageHandler = (data: any) => void;
+
+function getWsUrl(): string {
+  const { backendUrl } = useConnectionStore.getState();
+  return backendUrl.replace(/^http/, "ws");
+}
 
 export class WSManager {
   private ws: WebSocket | null = null;
@@ -27,7 +33,8 @@ export class WSManager {
     if (!token) return;
 
     const params = new URLSearchParams({ token, ...queryParams });
-    const url = `${WS_URL}${this.path}?${params.toString()}`;
+    const wsUrl = getWsUrl();
+    const url = `${wsUrl}${this.path}?${params.toString()}`;
 
     this.ws = new WebSocket(url);
 

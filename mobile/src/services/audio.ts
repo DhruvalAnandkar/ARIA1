@@ -1,5 +1,5 @@
 import { Audio } from "expo-av";
-import { BACKEND_URL } from "../constants/config";
+import { useConnectionStore } from "../stores/useConnectionStore";
 
 let currentSound: Audio.Sound | null = null;
 
@@ -18,7 +18,7 @@ export async function playAudioFromUrl(audioUrl: string): Promise<void> {
     // Build full URL if relative
     const fullUrl = audioUrl.startsWith("http")
       ? audioUrl
-      : `${BACKEND_URL}${audioUrl}`;
+      : `${useConnectionStore.getState().backendUrl}${audioUrl}`;
 
     const { sound } = await Audio.Sound.createAsync({ uri: fullUrl });
     currentSound = sound;

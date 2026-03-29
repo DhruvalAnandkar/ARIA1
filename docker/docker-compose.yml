@@ -96,6 +96,20 @@ services:
     networks:
       - aria-net
 
+  # Optional: expose backend via public tunnel (works across any network)
+  # Usage: docker compose --profile tunnel up
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate --url http://nginx:80
+    profiles:
+      - tunnel
+    depends_on:
+      nginx:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - aria-net
+
 volumes:
   postgres-data:
   mongo-data:

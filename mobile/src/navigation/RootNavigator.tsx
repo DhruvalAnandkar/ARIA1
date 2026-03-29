@@ -1,16 +1,19 @@
 import React, { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { useAuthStore } from "../stores/useAuthStore";
+import { useConnectionStore } from "../stores/useConnectionStore";
 import AuthNavigator from "./AuthNavigator";
 import MainNavigator from "./MainNavigator";
 import { colors } from "../constants/theme";
 
 export default function RootNavigator() {
   const { isAuthenticated, isLoading, initialize } = useAuthStore();
+  const loadBackendUrl = useConnectionStore((s) => s.loadBackendUrl);
 
   useEffect(() => {
+    loadBackendUrl();
     initialize();
-  }, [initialize]);
+  }, [initialize, loadBackendUrl]);
 
   if (isLoading) {
     return (
